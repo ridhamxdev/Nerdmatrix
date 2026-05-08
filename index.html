@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nerdmatrix — Digital Agency</title>
+<link rel="icon" type="image/jpeg" href="652405100_1928812854415489_2500658479865889028_n.jpg">
+<link rel="apple-touch-icon" href="652405100_1928812854415489_2500658479865889028_n.jpg">
+<meta property="og:image" content="652405100_1928812854415489_2500658479865889028_n.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -79,13 +82,20 @@
     gap: 24px;
   }
   .loader-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 32px;
-    letter-spacing: -1px;
+    width: 88px;
+    height: 88px;
+    border: 1px solid rgba(184,255,87,.35);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 36px rgba(184,255,87,.18);
     opacity: 0;
   }
-  .loader-logo span { color: var(--accent); }
+  .loader-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
   .loader-bar-wrap {
     width: 200px;
     height: 1px;
@@ -132,7 +142,13 @@
     gap: 10px;
   }
   .nav-logo-icon {
-    width: 32px; height: 32px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(184,255,87,.35);
+    border-radius: 50%;
+    box-shadow: 0 0 18px rgba(184,255,87,.14);
+    display: block;
+    object-fit: cover;
+    flex: 0 0 auto;
   }
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; gap: 32px; list-style: none; }
@@ -216,10 +232,17 @@
     width: 280px; height: 280px;
     opacity: 0;
   }
-  .hero-logo-svg {
+  .hero-logo-svg,
+  .hero-logo-img {
     width: 100%; height: 100%;
+    border: 1px solid rgba(184,255,87,.28);
+    border-radius: 50%;
     filter: drop-shadow(0 0 40px rgba(184,255,87,.25));
     animation: logoFloat 6s ease-in-out infinite;
+  }
+  .hero-logo-img {
+    display: block;
+    object-fit: cover;
   }
   @keyframes logoFloat {
     0%,100% { transform: translateY(0) rotate(0deg); }
@@ -638,8 +661,24 @@
     padding: 32px 40px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; }
-  .footer-logo span { color: var(--accent); }
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    text-decoration: none;
+  }
+  .footer-logo img {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(184,255,87,.28);
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .footer-logo span span { color: var(--accent); }
   .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: .05em; }
   .footer-links { display: flex; gap: 24px; }
   .footer-links a { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; }
@@ -685,7 +724,13 @@
     .leads-table th, .leads-table td { padding: 12px 10px; }
     .hero-bottom { flex-direction: column; align-items: flex-start; gap: 32px; }
     .hero-stats { flex-direction: row; }
-    .hero-logo-wrap { display: none; }
+    .hero-logo-wrap {
+      display: block;
+      top: 92px;
+      right: 20px;
+      width: 96px;
+      height: 96px;
+    }
     .ig-strip { flex-direction: column; align-items: flex-start; margin: 0 20px; }
   }
 </style>
@@ -694,7 +739,9 @@
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo" id="loaderLogo">Nerd<span>matrix</span></div>
+  <div class="loader-logo" id="loaderLogo">
+    <img src="652405100_1928812854415489_2500658479865889028_n.jpg" alt="Nerdmatrix logo">
+  </div>
   <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
   <div class="loader-pct" id="loaderPct">0%</div>
 </div>
@@ -705,15 +752,7 @@
 <!-- NAV -->
 <nav id="navbar">
   <a href="#" class="nav-logo">
-    <!-- inline SVG logo scaled for nav -->
-    <svg class="nav-logo-icon" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="100" cy="100" r="95" stroke="#b8ff57" stroke-width="2" fill="none" opacity="0.3"/>
-      <path d="M100 20 C130 40 160 60 160 100 C160 140 130 160 100 180 C70 160 40 140 40 100 C40 60 70 40 100 20Z" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <path d="M100 20 C70 40 40 60 40 100 C40 140 70 160 100 180 C130 160 160 140 160 100 C160 60 130 40 100 20Z" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <path d="M20 100 C40 70 60 40 100 40 C140 40 160 70 180 100 C160 130 140 160 100 160 C60 160 40 130 20 100Z" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <!-- N letter -->
-      <text x="68" y="120" font-family="Arial" font-weight="900" font-size="64" fill="#b8ff57" opacity="0.9">N</text>
-    </svg>
+    <img class="nav-logo-icon" src="652405100_1928812854415489_2500658479865889028_n.jpg" alt="Nerdmatrix logo">
     Nerd<span>matrix</span>
   </a>
   <ul class="nav-links">
@@ -743,30 +782,7 @@
 
   <!-- Floating Logo -->
   <div class="hero-logo-wrap" id="heroLogo">
-    <svg class="hero-logo-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- outer ring -->
-      <circle cx="150" cy="150" r="140" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.2"/>
-      <circle cx="150" cy="150" r="140" stroke="url(#glowRing)" stroke-width="2" fill="none" opacity="0.6"/>
-      <!-- lattice arcs -->
-      <path d="M150 30 C200 60 230 100 230 150 C230 200 200 240 150 270 C100 240 70 200 70 150 C70 100 100 60 150 30Z" stroke="#b8ff57" stroke-width="1.5" fill="rgba(184,255,87,0.04)"/>
-      <path d="M150 30 C100 60 70 100 70 150 C70 200 100 240 150 270 C200 240 230 200 230 150 C230 100 200 60 150 30Z" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <path d="M30 150 C60 100 100 70 150 70 C200 70 240 100 270 150 C240 200 200 230 150 230 C100 230 60 200 30 150Z" stroke="#b8ff57" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <path d="M30 150 C60 200 100 230 150 230 C200 230 240 200 270 150 C240 100 200 70 150 70 C100 70 60 100 30 150Z" stroke="#b8ff57" stroke-width="1" fill="none" opacity="0.3"/>
-      <!-- inner glow circle -->
-      <circle cx="150" cy="150" r="70" fill="url(#innerGlow)" opacity="0.15"/>
-      <!-- NM text -->
-      <text x="96" y="180" font-family="Arial" font-weight="900" font-size="80" fill="#b8ff57" opacity="0.95" letter-spacing="-4">NM</text>
-      <defs>
-        <radialGradient id="glowRing" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#b8ff57"/>
-          <stop offset="100%" stop-color="#57c8ff"/>
-        </radialGradient>
-        <radialGradient id="innerGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#b8ff57"/>
-          <stop offset="100%" stop-color="transparent"/>
-        </radialGradient>
-      </defs>
-    </svg>
+    <img class="hero-logo-img" src="652405100_1928812854415489_2500658479865889028_n.jpg" alt="Nerdmatrix logo">
   </div>
 
   <p class="hero-tag" id="heroTag">Digital Agency · Est. 2026</p>
@@ -1167,7 +1183,10 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-logo">Nerd<span>matrix</span></span>
+  <a href="#" class="footer-logo">
+    <img src="652405100_1928812854415489_2500658479865889028_n.jpg" alt="Nerdmatrix logo">
+    <span>Nerd<span>matrix</span></span>
+  </a>
   <span class="footer-copy">© 2026 Nerdmatrix. All rights reserved.</span>
   <div class="footer-links">
     <a href="#websites">Work</a>
