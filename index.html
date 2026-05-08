@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nerdmatrix — Digital Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --surface: #161616;
+    --border: #222222;
+    --accent: #b8ff57;
+    --accent2: #ff6b35;
+    --accent3: #57c8ff;
+    --text: #f0f0f0;
+    --muted: #666666;
+    --muted2: #444444;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(184,255,87,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease;
+  }
+  .cursor.hovered { width: 20px; height: 20px; }
+  .cursor-ring.hovered { width: 60px; height: 60px; border-color: rgba(184,255,87,0.2); }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    border-color: var(--border);
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: #000 !important;
+    padding: 8px 20px;
+    font-weight: 500;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(184,255,87,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,255,87,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: '//';
+    margin-right: 8px;
+    opacity: 0.5;
+  }
+  .hero-headline {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 0.92;
+    letter-spacing: -3px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero-headline em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .hero-desc {
+    max-width: 380px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+  }
+  .stat-item { text-align: right; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 60px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+  .scroll-text { font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; writing-mode: vertical-rl; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 16px 0;
+    background: var(--surface);
+  }
+  .marquee {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+  }
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 32px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .marquee-item span { color: var(--accent); font-size: 18px; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 40px; }
+  .section-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 60px;
+  }
+  .section-title em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* WEBSITES */
+  #websites { background: var(--bg); }
+  .websites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .website-card {
+    background: var(--bg);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .website-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(184,255,87,0.04) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .website-card:hover::before { opacity: 1; }
+  .website-card:hover { background: var(--surface); }
+  .card-number {
+    font-size: 11px;
+    color: var(--muted2);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .website-card:hover .card-icon {
+    border-color: var(--accent);
+    background: rgba(184,255,87,0.08);
+  }
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .card-url {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tag.active { border-color: var(--accent); color: var(--accent); background: rgba(184,255,87,0.06); }
+  .card-arrow {
+    position: absolute;
+    bottom: 36px;
+    right: 36px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--muted);
+    transition: all 0.3s;
+    transform: rotate(-45deg);
+  }
+  .website-card:hover .card-arrow {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(184,255,87,0.08);
+    transform: rotate(0deg);
+  }
+  .website-card.featured {
+    grid-column: span 2;
+  }
+
+  /* SERVICES */
+  #services { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .services-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .services-left {}
+  .services-right {
+    padding-top: 100px;
+  }
+  .service-item {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    cursor: default;
+    transition: padding 0.3s;
+  }
+  .service-item:first-child { border-top: 1px solid var(--border); }
+  .service-item:hover { padding-left: 8px; }
+  .service-num { font-size: 11px; color: var(--muted2); margin-top: 4px; min-width: 28px; }
+  .service-content {}
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+  .service-item:hover .service-name { color: var(--accent); }
+  .service-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  .service-highlight {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-highlight::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .highlight-label { font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .highlight-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .highlight-text em { color: var(--accent); font-style: italic; }
+  .highlight-note { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* SOCIAL MEDIA */
+  #social { background: var(--bg); }
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 60px;
+  }
+  .social-card {
+    background: var(--bg);
+    padding: 32px 28px;
+    transition: background 0.3s;
+  }
+  .social-card:hover { background: var(--surface); }
+  .social-platform {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .social-client {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  .social-detail { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .social-influencer-wrap {
+    border: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .social-influencer-wrap::after {
+    content: '✦ INFLUENCERS ✦';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted2);
+    white-space: nowrap;
+  }
+  .influencer-left {}
+  .influencer-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+  }
+  .influencer-title em { font-family: 'Instrument Serif', serif; font-style: italic; color: var(--accent2); }
+  .influencer-desc { font-size: 13px; color: var(--muted); line-height: 1.8; max-width: 360px; }
+  .influencer-icons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    max-width: 280px;
+    justify-content: flex-end;
+  }
+  .infl-icon {
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.3s;
+  }
+  .infl-icon:hover { border-color: var(--accent2); background: rgba(255,107,53,0.08); transform: translateY(-3px); }
+
+  /* LEAD GEN */
+  #leads { background: var(--surface); border-top: 1px solid var(--border); }
+  .leads-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .leads-table th {
+    text-align: left;
+    padding: 14px 20px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    font-weight: 400;
+  }
+  .leads-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    transition: background 0.2s;
+  }
+  .leads-table tr:hover td { background: rgba(184,255,87,0.02); }
+  .leads-table tr:last-child td { border-bottom: none; }
+  .lead-client {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+  }
+  .lead-url { font-size: 11px; color: var(--accent); opacity: 0.7; margin-top: 3px; }
+  .lead-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(184,255,87,0.08);
+    border: 1px solid rgba(184,255,87,0.3);
+    color: var(--accent);
+  }
+  .lead-badge.orange {
+    background: rgba(255,107,53,0.08);
+    border-color: rgba(255,107,53,0.3);
+    color: var(--accent2);
+  }
+
+  /* ABOUT */
+  #about { background: var(--bg); border-top: 1px solid var(--border); }
+  .about-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+    height: 400px;
+  }
+  .about-box {
+    position: absolute;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .about-box:nth-child(1) { width: 180px; height: 180px; top: 0; left: 0; }
+  .about-box:nth-child(2) { width: 220px; height: 220px; top: 60px; left: 120px; background: rgba(184,255,87,0.04); border-color: rgba(184,255,87,0.3); }
+  .about-box:nth-child(3) { width: 140px; height: 140px; bottom: 0; left: 20px; }
+  .about-box:nth-child(4) { width: 160px; height: 160px; bottom: 20px; right: 20px; }
+  .box-big { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); }
+  .box-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .about-text {}
+  .about-body { font-size: 14px; color: var(--muted); line-height: 1.85; margin-bottom: 24px; }
+  .about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+  .value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .value-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .value-icon { font-size: 18px; }
+
+  /* CONTACT / CTA */
+  #contact {
+    background: var(--accent);
+    padding: 100px 40px;
+    border-top: none;
+  }
+  #contact * { color: #000; }
+  .contact-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .contact-left {}
+  .contact-tag { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; opacity: 0.5; }
+  .contact-headline {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 72px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+  .contact-headline em { font-family: 'Instrument Serif', serif; font-style: italic; }
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: #000;
+    color: var(--accent) !important;
+    padding: 16px 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: gap 0.3s;
+  }
+  .contact-btn:hover { gap: 20px; }
+  .contact-right { text-align: right; }
+  .contact-info { font-size: 13px; line-height: 2; opacity: 0.7; }
+
+  /* FOOTER */
+  footer {
+    background: #000;
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* Reveal animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1024px) {
+    .websites-grid { grid-template-columns: repeat(2, 1fr); }
+    .website-card.featured { grid-column: span 2; }
+    .social-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-layout { grid-template-columns: 1fr; gap: 60px; }
+    .services-right { padding-top: 0; }
+    .about-layout { grid-template-columns: 1fr; }
+    .about-visual { display: none; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 70px 20px; }
+    #hero { padding: 0 20px 50px; }
+    .hero-stats { gap: 24px; }
+    .stat-num { font-size: 26px; }
+    .websites-grid, .social-grid { grid-template-columns: 1fr; }
+    .website-card.featured { grid-column: span 1; }
+    .contact-inner { flex-direction: column; gap: 40px; align-items: flex-start; }
+    .contact-right { text-align: left; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .social-influencer-wrap { flex-direction: column; }
+    .influencer-icons { justify-content: flex-start; }
+    .leads-table { font-size: 11px; }
+    .leads-table th, .leads-table td { padding: 12px 10px; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 32px; }
+    .hero-stats { flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Nerd<span>matrix</span></a>
+  <ul class="nav-links">
+    <li><a href="#websites">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#social">Social</a></li>
+    <li><a href="#leads">Leads</a></li>
+    <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <p class="hero-tag">Digital Agency · Est. 2020</p>
+  <h1 class="hero-headline">We Build<br><em>Brands</em><br>That Bite</h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">Nerdmatrix is a full-service digital agency crafting websites, social presence, and lead generation systems for ambitious brands.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">6+</span>
+        <span class="stat-label">Projects Live</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Services</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Ambition</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <div class="marquee-item">Web Design <span>✦</span></div>
+    <div class="marquee-item">Lead Generation <span>✦</span></div>
+    <div class="marquee-item">Social Media <span>✦</span></div>
+    <div class="marquee-item">UI/UX Design <span>✦</span></div>
+    <div class="marquee-item">Mobile Apps <span>✦</span></div>
+    <div class="marquee-item">Brand Strategy <span>✦</span></div>
+    <div class="marquee-item">Digital Marketing <span>✦</span></div>
+    <div class="marquee-item">Influencer Management <span>✦</span></div>
+    <div class="marquee-item">Web Design <span>✦</span></div>
+    <div class="marquee-item">Lead Generation <span>✦</span></div>
+    <div class="marquee-item">Social Media <span>✦</span></div>
+    <div class="marquee-item">UI/UX Design <span>✦</span></div>
+    <div class="marquee-item">Mobile Apps <span>✦</span></div>
+    <div class="marquee-item">Brand Strategy <span>✦</span></div>
+    <div class="marquee-item">Digital Marketing <span>✦</span></div>
+    <div class="marquee-item">Influencer Management <span>✦</span></div>
+  </div>
+</div>
+
+<!-- WEBSITES -->
+<section id="websites">
+  <div class="section-tag">Our Work</div>
+  <h2 class="section-title reveal">Websites We've<br><em>Shipped</em></h2>
+
+  <div class="websites-grid">
+
+    <a href="https://dreamtouchstudio.com" target="_blank" class="website-card featured reveal">
+      <div class="card-number">01 — Featured</div>
+      <div class="card-icon">🏠</div>
+      <div class="card-name">Dream Touch Studio</div>
+      <div class="card-url">dreamtouchstudio.com</div>
+      <div class="card-desc">A premium interior design studio website built to convert visitors into clients. Elegant layouts, curated portfolio, and high-conversion contact flows.</div>
+      <div class="card-tags">
+        <span class="tag active">Web Design</span>
+        <span class="tag active">Lead Gen</span>
+        <span class="tag active">Social Media</span>
+        <span class="tag">Interior Design</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="https://enamdoc.com" target="_blank" class="website-card reveal">
+      <div class="card-number">02</div>
+      <div class="card-icon">🏥</div>
+      <div class="card-name">EnamDoc</div>
+      <div class="card-url">enamdoc.com</div>
+      <div class="card-desc">Healthcare platform with appointment booking and patient engagement — plus a native iOS & Android mobile app.</div>
+      <div class="card-tags">
+        <span class="tag active">Web Design</span>
+        <span class="tag active">Lead Gen</span>
+        <span class="tag active">Social Media</span>
+        <span class="tag">Healthcare</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="https://thedesifood.com" target="_blank" class="website-card reveal">
+      <div class="card-number">03</div>
+      <div class="card-icon">🍛</div>
+      <div class="card-name">The Desi Food</div>
+      <div class="card-url">thedesifood.com</div>
+      <div class="card-desc">A vibrant food & restaurant brand website showcasing authentic desi cuisine with mouth-watering visuals and menu experiences.</div>
+      <div class="card-tags">
+        <span class="tag active">Web Design</span>
+        <span class="tag">Food & Beverage</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="https://visionglassinteriors.in" target="_blank" class="website-card reveal">
+      <div class="card-number">04</div>
+      <div class="card-icon">🪟</div>
+      <div class="card-name">Vision Glass Interiors</div>
+      <div class="card-url">visionglassinteriors.in</div>
+      <div class="card-desc">Architectural glass and interiors brand with a sophisticated web presence designed to attract high-value B2B clients.</div>
+      <div class="card-tags">
+        <span class="tag active">Web Design</span>
+        <span class="tag active">Lead Gen</span>
+        <span class="tag active">Social Media</span>
+        <span class="tag">Architecture</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <div class="website-card reveal" style="cursor:default;">
+      <div class="card-number">05 — Mobile App</div>
+      <div class="card-icon">📱</div>
+      <div class="card-name">EnamDoc App</div>
+      <div class="card-url">iOS & Android</div>
+      <div class="card-desc">Native mobile application for EnamDoc — bringing healthcare access to patients' fingertips with intuitive UX and seamless booking.</div>
+      <div class="card-tags">
+        <span class="tag active">iOS App</span>
+        <span class="tag active">Android App</span>
+        <span class="tag">Mobile UX</span>
+      </div>
+    </div>
+
+    <div class="website-card reveal" style="cursor:default;">
+      <div class="card-number">06</div>
+      <div class="card-icon">🛣️</div>
+      <div class="card-name">Highway Delight</div>
+      <div class="card-url">highway-delight.com</div>
+      <div class="card-desc">A roadside food and travel brand website crafted to capture the spirit of on-the-go discovery with bold, immersive design.</div>
+      <div class="card-tags">
+        <span class="tag active">Web Design</span>
+        <span class="tag active">Lead Gen</span>
+        <span class="tag">Travel & Food</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-tag">What We Do</div>
+  <div class="services-layout">
+    <div class="services-left">
+      <h2 class="section-title reveal">Three Ways<br>We Help You<br><em>Grow</em></h2>
+      <div class="service-item reveal">
+        <span class="service-num">01</span>
+        <div class="service-content">
+          <div class="service-name">Website Design & Dev</div>
+          <p class="service-desc">High-performance, visually stunning websites built to convert. From concept to deployment — we handle every pixel and every line of code.</p>
+        </div>
+      </div>
+      <div class="service-item reveal">
+        <span class="service-num">02</span>
+        <div class="service-content">
+          <div class="service-name">Lead Generation</div>
+          <p class="service-desc">Targeted campaigns and funnels that fill your pipeline. We build systems that attract, qualify, and convert the right people.</p>
+        </div>
+      </div>
+      <div class="service-item reveal">
+        <span class="service-num">03</span>
+        <div class="service-content">
+          <div class="service-name">Social Media Management</div>
+          <p class="service-desc">Consistent, strategic content across platforms. We manage brand handles and influencer accounts to build audiences that trust you.</p>
+        </div>
+      </div>
+    </div>
+    <div class="services-right reveal">
+      <div class="service-highlight">
+        <div class="highlight-label">// Our Philosophy</div>
+        <p class="highlight-text">We don't just build things — we build things that <em>work</em>.</p>
+        <p class="highlight-note">Every project at Nerdmatrix starts with one question: what does success look like for you? Then we reverse-engineer the digital infrastructure to get you there. No bloat, no guesswork — just results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL MEDIA -->
+<section id="social">
+  <div class="section-tag">Social Media</div>
+  <h2 class="section-title reveal">Brands We've<br>Made <em>Louder</em></h2>
+
+  <div class="social-grid">
+    <div class="social-card reveal">
+      <div class="social-platform">📸 Instagram · 🐦 Twitter · 💼 LinkedIn</div>
+      <div class="social-client">Dream Touch Studio</div>
+      <p class="social-detail">Full social media management — content strategy, creative direction, and growth across all major platforms for this premium interior brand.</p>
+    </div>
+    <div class="social-card reveal">
+      <div class="social-platform">📸 Instagram · 💼 LinkedIn · 📘 Facebook</div>
+      <div class="social-client">EnamDoc</div>
+      <p class="social-detail">Healthcare brand social management — building trust, patient education content, and community engagement for the platform.</p>
+    </div>
+    <div class="social-card reveal">
+      <div class="social-platform">📸 Instagram · 📘 Facebook · 💼 LinkedIn</div>
+      <div class="social-client">Vision Glass Interiors</div>
+      <p class="social-detail">B2B-focused social strategy for an architecture and interiors company — project showcases, thought leadership, and lead-driving content.</p>
+    </div>
+    <div class="social-card reveal" style="background: rgba(184,255,87,0.03); border-left: none;">
+      <div class="social-platform">🌟 Influencer Management</div>
+      <div class="social-client">Multiple Creators</div>
+      <p class="social-detail">End-to-end social media management for influencers — content calendars, engagement strategy, brand deals, and growth hacking.</p>
+    </div>
+  </div>
+
+  <div class="social-influencer-wrap reveal">
+    <div class="influencer-left">
+      <h3 class="influencer-title">We Manage<br><em>Influencers</em> Too</h3>
+      <p class="influencer-desc">From content strategy to brand partnership negotiations — we run the social handles of creators so they can focus on creating. We handle the strategy, scheduling, engagement, and growth.</p>
+    </div>
+    <div class="influencer-icons">
+      <div class="infl-icon" title="Instagram">📸</div>
+      <div class="infl-icon" title="YouTube">▶️</div>
+      <div class="infl-icon" title="Twitter / X">🐦</div>
+      <div class="infl-icon" title="LinkedIn">💼</div>
+      <div class="infl-icon" title="Facebook">📘</div>
+      <div class="infl-icon" title="Threads">🧵</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEAD GENERATION -->
+<section id="leads">
+  <div class="section-tag">Lead Generation</div>
+  <h2 class="section-title reveal">Filling Pipelines,<br><em>Not Spreadsheets</em></h2>
+
+  <table class="leads-table reveal">
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Industry</th>
+        <th>Lead Type</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="lead-client">Dream Touch Studio</div>
+          <div class="lead-url">dreamtouchstudio.com</div>
+        </td>
+        <td style="color:var(--muted); font-size:12px;">Interior Design</td>
+        <td style="color:var(--muted); font-size:12px;">Inbound + Meta Ads</td>
+        <td><span class="lead-badge">Active</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="lead-client">EnamDoc</div>
+          <div class="lead-url">enamdoc.com</div>
+        </td>
+        <td style="color:var(--muted); font-size:12px;">Healthcare</td>
+        <td style="color:var(--muted); font-size:12px;">Google Ads + SEO</td>
+        <td><span class="lead-badge">Active</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="lead-client">Vision Glass Interiors</div>
+          <div class="lead-url">visionglassinteriors.in</div>
+        </td>
+        <td style="color:var(--muted); font-size:12px;">Architecture</td>
+        <td style="color:var(--muted); font-size:12px;">LinkedIn + Meta</td>
+        <td><span class="lead-badge">Active</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="lead-client">Highway Delight</div>
+          <div class="lead-url">highway-delight.com</div>
+        </td>
+        <td style="color:var(--muted); font-size:12px;">Food & Travel</td>
+        <td style="color:var(--muted); font-size:12px;">Meta Ads + Organic</td>
+        <td><span class="lead-badge orange">Ongoing</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="lead-client">EnamDoc App</div>
+          <div class="lead-url">iOS & Android</div>
+        </td>
+        <td style="color:var(--muted); font-size:12px;">Healthcare Tech</td>
+        <td style="color:var(--muted); font-size:12px;">App Store + Paid</td>
+        <td><span class="lead-badge orange">Ongoing</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-tag">About Nerdmatrix</div>
+  <div class="about-layout">
+    <div class="about-visual">
+      <div class="about-box">
+        <span class="box-big">6+</span>
+        <span class="box-label">Projects</span>
+      </div>
+      <div class="about-box">
+        <span class="box-big">3</span>
+        <span class="box-label">Core Services</span>
+      </div>
+      <div class="about-box">
+        <span class="box-big">∞</span>
+        <span class="box-label">Ideas</span>
+      </div>
+      <div class="about-box">
+        <span class="box-big">01</span>
+        <span class="box-label">Focus: Results</span>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <h2 class="section-title" style="margin-bottom:24px;">Who We <em>Are</em></h2>
+      <p class="about-body">Nerdmatrix is a digital agency that believes in the power of well-crafted digital experiences. We're a team of designers, developers, and marketers who obsess over the details that make a brand stand out.</p>
+      <p class="about-body">From local businesses to growing startups — we bring the same level of craft and strategy to every project. Our work spans website design, mobile applications, social media management, and lead generation systems.</p>
+      <div class="about-values">
+        <div class="value-row">
+          <span class="value-name">Craft Over Shortcuts</span>
+          <span class="value-icon">⚡</span>
+        </div>
+        <div class="value-row">
+          <span class="value-name">Results, Not Just Deliverables</span>
+          <span class="value-icon">🎯</span>
+        </div>
+        <div class="value-row">
+          <span class="value-name">Long-Term Partnerships</span>
+          <span class="value-icon">🤝</span>
+        </div>
+        <div class="value-row">
+          <span class="value-name">Always Iterating</span>
+          <span class="value-icon">🔄</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section id="contact" style="padding:100px 40px;">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <p class="contact-tag">// Let's work together</p>
+      <h2 class="contact-headline">Ready to<br>Build <em>Something</em><br>Great?</h2>
+      <a href="mailto:hello@nerdmatrix.in" class="contact-btn">
+        Start a Project
+        <span>→</span>
+      </a>
+    </div>
+    <div class="contact-right">
+      <p class="contact-info">
+        hello@nerdmatrix.in<br>
+        nerdmatrix.in<br><br>
+        Web Design<br>
+        Lead Generation<br>
+        Social Media Management
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Nerd<span>matrix</span></span>
+  <span class="footer-copy">© 2025 Nerdmatrix. All rights reserved.</span>
+  <div class="footer-links">
+    <a href="#websites">Work</a>
+    <a href="#services">Services</a>
+    <a href="#social">Social</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button, .website-card, .social-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovered'); ring.classList.add('hovered'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovered'); ring.classList.remove('hovered'); });
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger grid children
+  document.querySelectorAll('.websites-grid .website-card, .social-grid .social-card').forEach((el, i) => {
+    el.style.transitionDelay = (i * 80) + 'ms';
+  });
+</script>
+</body>
+</html>
